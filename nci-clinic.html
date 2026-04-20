@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCI Clinic - การตรวจสุขภาพครบวงจร</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #004499;
+            --primary-light: #e6f0ff;
+            --accent: #ff6b6b;
+            --accent-light: #ffe0e0;
+            --text-dark: #1a1a1a;
+            --text-light: #666666;
+            --bg-light: #f8fafc;
+            --border: #e0e0e0;
+            --success: #10b981;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #f8fafc 100%);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .nav-btn.active {
+            background: var(--primary-dark);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Index Page */
+        .index-page {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: slideInDown 0.6s ease;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            animation: fadeIn 0.8s ease 0.3s both;
+        }
+
+        .service-button {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .service-button:hover {
+            border-color: var(--primary);
+            box-shadow: 0 12px 24px rgba(0, 102, 204, 0.15);
+            transform: translateY(-8px);
+            background: var(--primary-light);
+        }
+
+        .service-icon {
+            font-size: 4rem;
+            line-height: 1;
+        }
+
+        .service-button h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .service-button p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Animations */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Page Transition */
+        .page {
+            display: none;
+            animation: slideInUp 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .breadcrumb span {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0;
+            margin: 0 0.5rem;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb button:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        .filter-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-item label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+        }
+
+        .filter-item select,
+        .filter-item input {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        .filter-item select:focus,
+        .filter-item input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .result-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .result-card .detail {
+            margin-bottom: 0.8rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .result-card .detail strong {
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .result-card .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--primary-light);
+        }
+
+        .result-card .price::before {
+            content: "฿ ";
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .column-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .column-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 12px 24px rgba(0, 102, 204, 0.15);
+            transform: translateY(-8px);
+            background: var(--primary-light);
+        }
+
+        .column-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .column-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--bg-light);
+            color: var(--primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Table styling */
+        table {
+            font-family: inherit;
+        }
+
+        table th,
+        table td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+
+            .grid-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-group {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            /* Make table scrollable on mobile */
+            table {
+                font-size: 0.8rem;
+            }
+
+            table th,
+            table td {
+                padding: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">🏥 NCI Clinic</div>
+        <ul class="nav-links">
+            <li><button class="nav-btn" onclick="showPage('page1')">หน้าแรก</button></li>
+            <li><button class="nav-btn" onclick="showPage('page2')">คลินิคเฉพาะทาง</button></li>
+            <li><button class="nav-btn" onclick="showPage('page3')">Clinic Checkup</button></li>
+        </ul>
+    </nav>
+
+    <!-- Page 1: Index Page -->
+    <div id="page1" class="page active">
+        <div class="container">
+            <div class="index-page">
+                <div class="hero-section">
+                    <h1>ยินดีต้อนรับ</h1>
+                    <p>ศูนย์ตรวจสุขภาพครบวงจร NCI Clinic<br>บริการตรวจสอบสุขภาพอย่างเป็นระบบ</p>
+                </div>
+
+                <div class="grid-buttons">
+                    <button class="service-button" onclick="showPage('page2')">
+                        <div class="service-icon">🎯</div>
+                        <h2>คลินิคเฉพาะทาง</h2>
+                        <p>ตรวจเยี่ยมแพทย์เฉพาะด้าน ภายในเวลาราชการ หรือนอกเวลา</p>
+                    </button>
+
+                    <button class="service-button" onclick="showPage('page3')">
+                        <div class="service-icon">📋</div>
+                        <h2>Clinic Checkup</h2>
+                        <p>แพคเกจตรวจสุขภาพตามความต้องการ ราคาประหยัด</p>
+                    </button>
+
+                    <button class="service-button" onclick="alert('ฟีเจอร์ใหม่ - เร็ว ๆ นี้')">
+                        <div class="service-icon">👑</div>
+                        <h2>Premium Checkup</h2>
+                        <p>บริการพรีเมียม ครบครัน เช็กอบ สัมมนาการดูแลสุขภาพ</p>
+                    </button>
+
+                    <button class="service-button" onclick="alert('ระบบจองนัดหมายออนไลน์ - เร็ว ๆ นี้')">
+                        <div class="service-icon">📱</div>
+                        <h2>Online Appointment</h2>
+                        <p>จองนัดหมายสะดวก ๆ จากที่บ้าน ตรวจเช็ก สุขภาพได้ทุกเมื่อ</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2: คลินิคเฉพาะทาง (Specialty Clinics) -->
+    <div id="page2" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="showPage('page1')">← กลับไปหน้าแรก</button>
+
+            <div class="breadcrumb">
+                <span>หน้าแรก</span> / <span style="color: var(--text-dark);">คลินิคเฉพาะทาง</span>
+            </div>
+
+            <h1 style="margin-bottom: 2rem; color: var(--primary);">คลินิคเฉพาะทาง</h1>
+
+            <div class="filter-section">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label>เลือกคลินิก</label>
+                        <select id="clinicFilter">
+                            <option value="">-- ทั้งหมด --</option>
+                            <option value="cardio">คลินิกหัวใจและหลอดเลือด</option>
+                            <option value="neuro">คลินิกระบบประสาท</option>
+                            <option value="endo">คลินิกต่อมไร้ท่อ</option>
+                            <option value="gastro">คลินิกระบบทางเดินอาหาร</option>
+                            <option value="pulmo">คลินิกทางเดินหายใจ</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label>เวลา</label>
+                        <select id="timeFilter">
+                            <option value="">-- ทั้งหมด --</option>
+                            <option value="office">เวลาราชการ (08:00 - 16:00)</option>
+                            <option value="afterhours">นอกเวลาราชการ (16:00 - 20:00)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label>ค้นหาชื่อแพทย์</label>
+                        <input type="text" id="doctorSearch" placeholder="เช่น ดร. สมชาย">
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <h3>ดร. สมชาย กรุณาศิลป์</h3>
+                    <div class="detail">
+                        <strong>วิชาเอก:</strong> คลินิกหัวใจและหลอดเลือด
+                    </div>
+                    <div class="detail">
+                        <strong>เวลาตรวจ:</strong> เวลาราชการ (จันทร์-ศุกร์)
+                    </div>
+                    <div class="detail">
+                        <strong>สถานที่:</strong> ห้องตรวจ 101
+                    </div>
+                    <div class="price">500</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ดร. จิรา ศิริรัตน์</h3>
+                    <div class="detail">
+                        <strong>วิชาเอก:</strong> คลินิกระบบประสาท
+                    </div>
+                    <div class="detail">
+                        <strong>เวลาตรวจ:</strong> นอกเวลาราชการ (จันทร์-ศุกร์ 17:00-20:00)
+                    </div>
+                    <div class="detail">
+                        <strong>สถานที่:</strong> ห้องตรวจ 201
+                    </div>
+                    <div class="price">600</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ดร. มนัส ประสิทธิ์</h3>
+                    <div class="detail">
+                        <strong>วิชาเอก:</strong> คลินิกต่อมไร้ท่อ
+                    </div>
+                    <div class="detail">
+                        <strong>เวลาตรวจ:</strong> เวลาราชการ (พุธ-ศุกร์)
+                    </div>
+                    <div class="detail">
+                        <strong>สถานที่:</strong> ห้องตรวจ 301
+                    </div>
+                    <div class="price">550</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ดร. ศิรินา วงษ์ประเสริฐ</h3>
+                    <div class="detail">
+                        <strong>วิชาเอก:</strong> คลินิกระบบทางเดินอาหาร
+                    </div>
+                    <div class="detail">
+                        <strong>เวลาตรวจ:</strong> เวลาราชการ (จันทร์-อังคาร-ศุกร์)
+                    </div>
+                    <div class="detail">
+                        <strong>สถานที่:</strong> ห้องตรวจ 401
+                    </div>
+                    <div class="price">480</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ดร. วิชัย พืชชาติ</h3>
+                    <div class="detail">
+                        <strong>วิชาเอก:</strong> คลินิกทางเดินหายใจ
+                    </div>
+                    <div class="detail">
+                        <strong>เวลาตรวจ:</strong> นอกเวลาราชการ (องค์การ-พฤหัสบดี 18:00-20:00)
+                    </div>
+                    <div class="detail">
+                        <strong>สถานที่:</strong> ห้องตรวจ 501
+                    </div>
+                    <div class="price">520</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ดร. พิมพ์ชนา สมปัญญา</h3>
+                    <div class="detail">
+                        <strong>วิชาเอก:</strong> คลินิกหัวใจและหลอดเลือด
+                    </div>
+                    <div class="detail">
+                        <strong>เวลาตรวจ:</strong> นอกเวลาราชการ (พฤหัสบดี-ศุกร์ 17:30-20:00)
+                    </div>
+                    <div class="detail">
+                        <strong>สถานที่:</strong> ห้องตรวจ 102
+                    </div>
+                    <div class="price">580</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: Clinic Checkup -->
+    <div id="page3" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="showPage('page1')">← กลับไปหน้าแรก</button>
+
+            <div class="breadcrumb">
+                <span>หน้าแรก</span> / <span style="color: var(--text-dark);">Clinic Checkup</span>
+            </div>
+
+            <h1 style="margin-bottom: 2rem; color: var(--primary);">Clinic Checkup</h1>
+
+            <div class="two-column">
+                <button class="column-card" onclick="showPage('page4')">
+                    <div class="icon">📦</div>
+                    <h3>เลือก Package</h3>
+                    <p>ตรวจสุขภาพตามแพคเกจต่างๆ ที่ออกแบบเพื่อกลุ่มคนต่างๆ</p>
+                </button>
+
+                <button class="column-card" onclick="showPage('page5')">
+                    <div class="icon">🫀</div>
+                    <h3>เลือกตามอวัยวะ</h3>
+                    <p>เลือกการตรวจเฉพาะอวัยวะหรือระบบของร่างกายที่ต้องการ</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 4: Select Package -->
+    <div id="page4" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="showPage('page3')">← กลับไป</button>
+
+            <div class="breadcrumb">
+                <span>หน้าแรก</span> / <span>Clinic Checkup</span> / <span style="color: var(--text-dark);">เลือก Package</span>
+            </div>
+
+            <h1 style="margin-bottom: 2rem; color: var(--primary);">เลือก Package - เปรียบเทียบรายการตรวจ</h1>
+
+            <div class="filter-section">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label>เพศ</label>
+                        <select id="genderFilter">
+                            <option value="">-- ทั้งหมด --</option>
+                            <option value="male">ชาย</option>
+                            <option value="female">หญิง</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label>ช่วงอายุ</label>
+                        <select id="ageFilter">
+                            <option value="">-- ทั้งหมด --</option>
+                            <option value="20-30">20-30 ปี</option>
+                            <option value="30-40">30-40 ปี</option>
+                            <option value="40-50">40-50 ปี</option>
+                            <option value="50-60">50-60 ปี</option>
+                            <option value="60+">60+ ปี</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Package Comparison Table -->
+            <div style="overflow-x: auto; margin-top: 2rem; background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--border);">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white;">
+                            <th style="padding: 1.2rem; text-align: left; font-weight: 700; border: 1px solid rgba(255,255,255,0.2);">รายการตรวจ</th>
+                            <th style="padding: 1.2rem; text-align: center; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); background: linear-gradient(135deg, #ec407a 0%, #c2185b 100%);">
+                                <div style="font-size: 1rem;">โปรแกรม 1</div>
+                                <div style="font-size: 0.85rem; margin-top: 0.3rem;">Basic</div>
+                            </th>
+                            <th style="padding: 1.2rem; text-align: center; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); background: linear-gradient(135deg, #5e35b1 0%, #4527a0 100%);">
+                                <div style="font-size: 1rem;">โปรแกรม 2</div>
+                                <div style="font-size: 0.85rem; margin-top: 0.3rem;">Standard</div>
+                            </th>
+                            <th style="padding: 1.2rem; text-align: center; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); background: linear-gradient(135deg, #00897b 0%, #00695c 100%);">
+                                <div style="font-size: 1rem;">โปรแกรม 3</div>
+                                <div style="font-size: 0.85rem; margin-top: 0.3rem;">Executive</div>
+                            </th>
+                            <th style="padding: 1.2rem; text-align: center; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); background: linear-gradient(135deg, #0097a7 0%, #006064 100%);">
+                                <div style="font-size: 1rem;">โปรแกรม 4</div>
+                                <div style="font-size: 0.85rem; margin-top: 0.3rem;">Premium</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Exams -->
+                        <tr style="background: var(--primary-light);">
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">1. Physical Examination</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">2. Blood Grouping</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr style="background: var(--primary-light);">
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">3. AFP (Alpha Fetoprotein)</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">4. Albumin</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr style="background: var(--primary-light);">
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">5. ALP (Alkaline Phosphatase)</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">6. ALT (SGPT)</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                        </tr>
+                        <tr style="background: var(--primary-light);">
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">7. AST (SGOT)</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">8. Total Protein</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                        </tr>
+                        <tr style="background: var(--primary-light);">
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">9. Total Bilirubin</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">10. Direct Bilirubin</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr style="background: var(--primary-light);">
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">11. Creatinine</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">12. Glucose (Blood Sugar)</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr style="background: var(--primary-light);">
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">13. CBC (Complete Blood Count)</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #ec407a; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">14. Chest X-ray</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr style="background: var(--primary-light);">
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">15. EKG (Electrocardiography)</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #5e35b1; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">16. Ultrasound Abdomen</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #00897b; font-size: 1.5rem;">●</span></td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr style="background: var(--primary-light);">
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">17. Mammography (สตรี)</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); font-weight: 600; color: var(--primary);">18. Pap Smear (สตรี)</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;">-</td>
+                            <td style="padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: center;"><span style="color: #0097a7; font-size: 1.5rem;">●</span></td>
+                        </tr>
+
+                        <!-- Price Row -->
+                        <tr style="background: linear-gradient(135deg, var(--primary-light) 0%, rgba(0,102,204,0.1) 100%); font-weight: 700; border-top: 3px solid var(--primary);">
+                            <td style="padding: 1.2rem; border: 1px solid var(--primary); color: var(--primary); font-size: 1.1rem;">ราคา (บาท)</td>
+                            <td style="padding: 1.2rem; border: 1px solid var(--primary); text-align: center; color: #ec407a; font-size: 1.3rem;">3,965</td>
+                            <td style="padding: 1.2rem; border: 1px solid var(--primary); text-align: center; color: #5e35b1; font-size: 1.3rem;">5,808</td>
+                            <td style="padding: 1.2rem; border: 1px solid var(--primary); text-align: center; color: #00897b; font-size: 1.3rem;">7,855</td>
+                            <td style="padding: 1.2rem; border: 1px solid var(--primary); text-align: center; color: #0097a7; font-size: 1.3rem;">9,240</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1.5rem; background: var(--accent-light); border-radius: 12px; border-left: 4px solid var(--accent);">
+                <p style="color: var(--text-dark); margin: 0;">
+                    <strong>● = รายการตรวจที่รวมอยู่ในแพคเกจ</strong><br>
+                    <strong style="margin-top: 0.5rem; display: block;">- = ไม่รวมอยู่ในแพคเกจนี้</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 5: Select by Organ -->
+    <div id="page5" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="showPage('page3')">← กลับไป</button>
+
+            <div class="breadcrumb">
+                <span>หน้าแรก</span> / <span>Clinic Checkup</span> / <span style="color: var(--text-dark);">เลือกตามอวัยวะ</span>
+            </div>
+
+            <h1 style="margin-bottom: 2rem; color: var(--primary);">เลือกตามอวัยวะ</h1>
+
+            <div class="filter-section">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label>เลือกอวัยวะ</label>
+                        <select id="organFilter">
+                            <option value="">-- ทั้งหมด --</option>
+                            <option value="heart">หัวใจและหลอดเลือด</option>
+                            <option value="lung">ปอดและทางเดินหายใจ</option>
+                            <option value="stomach">ระบบทางเดินอาหาร</option>
+                            <option value="kidney">ไต</option>
+                            <option value="brain">สมองและระบบประสาท</option>
+                            <option value="liver">ตับและน้ำดี</option>
+                            <option value="bone">กระดูก</option>
+                            <option value="eye">ตา</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <h3>ตรวจหัวใจและหลอดเลือด</h3>
+                    <div class="detail">
+                        <strong>ลักษณะการตรวจที่สำคัญ:</strong>
+                        <ul style="margin-left: 1.5rem; color: var(--text-light);">
+                            <li>ตรวจทั่วไป + BP Check</li>
+                            <li>ECG (12 leads)</li>
+                            <li>Stress Test</li>
+                            <li>Ultrasound หัวใจ</li>
+                        </ul>
+                    </div>
+                    <div class="price">3,500</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ตรวจปอดและทางเดินหายใจ</h3>
+                    <div class="detail">
+                        <strong>ลักษณะการตรวจที่สำคัญ:</strong>
+                        <ul style="margin-left: 1.5rem; color: var(--text-light);">
+                            <li>Chest X-Ray</li>
+                            <li>Spirometry (วัดปริมาณปอด)</li>
+                            <li>Blood Gas Analysis</li>
+                            <li>CT Chest (ถ้าจำเป็น)</li>
+                        </ul>
+                    </div>
+                    <div class="price">2,800</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ตรวจระบบทางเดินอาหาร</h3>
+                    <div class="detail">
+                        <strong>ลักษณะการตรวจที่สำคัญ:</strong>
+                        <ul style="margin-left: 1.5rem; color: var(--text-light);">
+                            <li>Endoscopy</li>
+                            <li>Colonoscopy (ถ้าอายุ > 45 ปี)</li>
+                            <li>Ultrasound ท้อง</li>
+                            <li>Liver Function Test</li>
+                        </ul>
+                    </div>
+                    <div class="price">4,200</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ตรวจไต</h3>
+                    <div class="detail">
+                        <strong>ลักษณะการตรวจที่สำคัญ:</strong>
+                        <ul style="margin-left: 1.5rem; color: var(--text-light);">
+                            <li>Urinalysis</li>
+                            <li>Renal Function Test</li>
+                            <li>Ultrasound ไต</li>
+                            <li>Blood Pressure Monitoring</li>
+                        </ul>
+                    </div>
+                    <div class="price">2,200</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ตรวจสมองและระบบประสาท</h3>
+                    <div class="detail">
+                        <strong>ลักษณะการตรวจที่สำคัญ:</strong>
+                        <ul style="margin-left: 1.5rem; color: var(--text-light);">
+                            <li>Neurological Examination</li>
+                            <li>EEG (Electroencephalography)</li>
+                            <li>MRI Brain (ถ้าจำเป็น)</li>
+                            <li>Cognitive Assessment</li>
+                        </ul>
+                    </div>
+                    <div class="price">5,500</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ตรวจตับและน้ำดี</h3>
+                    <div class="detail">
+                        <strong>ลักษณะการตรวจที่สำคัญ:</strong>
+                        <ul style="margin-left: 1.5rem; color: var(--text-light);">
+                            <li>Liver Function Test</li>
+                            <li>Hepatitis B & C Screening</li>
+                            <li>Ultrasound ตับ</li>
+                            <li>Viral Serology</li>
+                        </ul>
+                    </div>
+                    <div class="price">3,000</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ตรวจกระดูก</h3>
+                    <div class="detail">
+                        <strong>ลักษณะการตรวจที่สำคัญ:</strong>
+                        <ul style="margin-left: 1.5rem; color: var(--text-light);">
+                            <li>DEXA Scan (Bone Density)</li>
+                            <li>Orthopedic Examination</li>
+                            <li>X-Ray (ถ้าจำเป็น)</li>
+                            <li>Calcium Level Test</li>
+                        </ul>
+                    </div>
+                    <div class="price">2,500</div>
+                </div>
+
+                <div class="result-card">
+                    <h3>ตรวจตา</h3>
+                    <div class="detail">
+                        <strong>ลักษณะการตรวจที่สำคัญ:</strong>
+                        <ul style="margin-left: 1.5rem; color: var(--text-light);">
+                            <li>Visual Acuity Test</li>
+                            <li>Tonometry (Glaucoma Test)</li>
+                            <li>Ophthalmoscopy</li>
+                            <li>Refraction Test</li>
+                        </ul>
+                    </div>
+                    <div class="price">1,500</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show selected page
+            const selectedPage = document.getElementById(pageId);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Add some interactivity to filters
+        document.addEventListener('DOMContentLoaded', function() {
+            const filters = document.querySelectorAll('select, input[type="text"]');
+            filters.forEach(filter => {
+                filter.addEventListener('change', function() {
+                    // Filters could be implemented here
+                    console.log('Filter changed:', this.id, this.value);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
